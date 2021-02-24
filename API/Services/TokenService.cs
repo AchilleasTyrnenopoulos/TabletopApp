@@ -20,13 +20,17 @@ namespace API.Services
 
         public string CreateToken(AppUser user)
         {
+            //makes the claims that will be put inside this token
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
             };
 
+            //creates the credentials
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
+            //make the descriptor that describes our token
+            //in here we specify what goes inside our token
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
@@ -36,6 +40,8 @@ namespace API.Services
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
+
+            //creates the JWToken  
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
