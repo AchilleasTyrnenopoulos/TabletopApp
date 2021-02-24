@@ -21,13 +21,14 @@ namespace API.Controllers
 
         }
 
-        //GET /register
+        //GET api/account/register
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             if (await UserExists(registerDto.Username))
                 return BadRequest("Username is taken");
 
+            //this provides us with the hashing algorithm we use to create the password hash
             using var hmac = new HMACSHA512();
 
             //create the new user
@@ -51,7 +52,7 @@ namespace API.Controllers
             };
         }
 
-        //POST /login
+        //POST api/account/login
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
@@ -60,11 +61,15 @@ namespace API.Controllers
             if (user == null)
                 return Unauthorized("Invalid username");
 
+            //create an instance of the HMACSHA512 class with the constructor overload, that takes a key, the password salt
+            //that will give us the 'supposedly' same computed hash that we would have in our database
             using var hmac = new HMACSHA512(user.PasswordSalt);
 
+            //compute the hash of the password that is given by our user via the loginDto
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
 
-            //check if password is correct
+            //check if password is correct, 
+            //if the password given by our loginDto is the same as the one we have in the database
             for (int i = 0; i < computedHash.Length; i++)
             {
                 if (computedHash[i] != user.PasswordHash[i])

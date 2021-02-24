@@ -16,6 +16,7 @@ export class AppComponent implements OnInit{
     this.getUsers();
   }
 
+  //get the users we have on our database from our api and assign them to the property users of the AppComponent
   getUsers()
   {
     this.http.get('https://localhost:5001/api/users').subscribe(response => {
