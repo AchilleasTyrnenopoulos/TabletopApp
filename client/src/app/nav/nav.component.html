@@ -5,7 +5,7 @@
           <span class="navbar-toggler-icon"></span>
         </button> -->
         <!-- <div class="collapse navbar-collapse" id="navbarCollapse"> -->
-          <ul class="navbar-nav mr-auto" *ngIf="loggedIn">
+          <ul class="navbar-nav mr-auto" *ngIf="accountService.currentUser$ | async">
             <li class="nav-item">
               <a class="nav-link" href="#">Matches</a>
             </li>
@@ -15,13 +15,10 @@
             <li class="nav-item">
               <a class="nav-link" href="#">Messages</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" (click)="logout()" href="#">Logout</a>
-            </li>
           </ul>
 
           <!-- dropdown menu when our user is logged in -->
-          <div class="dropdown" *ngIf="loggedIn" dropdown>
+          <div class="dropdown" *ngIf="accountService.currentUser$  | async" dropdown>
             <a class="dropdown-toggle text-light" dropdownToggle>Welcome user</a>
             <div class="dropdown-menu mt-3" *dropdownMenu>
               <a class="dropdown-item">Edit Profile</a>
@@ -31,7 +28,7 @@
           </div>
 
           <!-- the login form that is removed from the dom when our user logs in -->
-          <form #loginForm="ngForm" *ngIf="!loggedIn" class="form-inline mt-2 mt-md-0" 
+          <form #loginForm="ngForm" *ngIf="(accountService.currentUser$  | async) === null" class="form-inline mt-2 mt-md-0" 
                 (ngSubmit)="login()" autocomplete="off">
             <input class="form-control mr-sm-2" type="text" placeholder="Username"
                     name="username" [(ngModel)]="model.username">
